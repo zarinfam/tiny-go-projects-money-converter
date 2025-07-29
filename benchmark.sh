@@ -14,7 +14,7 @@ get_time_ms() {
 
 echo "=== Java Implementation ==="
 # Clean any previous builds
-cd /workspaces/tiny-go-projects-money-converter/java
+cd java
 rm -f target/money-converter
 
 # Measure compile time
@@ -56,9 +56,12 @@ echo "Average startup time: $JAVA_AVG_STARTUP ms"
 echo "Average execution time: $JAVA_AVG_EXEC ms"
 echo
 
+# Return to root directory
+cd ..
+
 echo "=== Go Implementation ==="
 # Clean any previous builds
-cd /workspaces/tiny-go-projects-money-converter/go
+cd go
 rm -f bin/moneyconverter
 
 # Measure compile time
@@ -99,6 +102,9 @@ GO_AVG_STARTUP=$((GO_STARTUP_TOTAL / NUM_EXECUTIONS))
 echo "Average startup time: $GO_AVG_STARTUP ms"
 echo "Average execution time: $GO_AVG_EXEC ms"
 echo
+
+# Return to root directory
+cd ..
 
 echo "=== Comparison Summary ==="
 echo "Metric          | Java Native | Go"
