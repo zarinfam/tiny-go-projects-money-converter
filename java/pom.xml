@@ -15,6 +15,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <graalvm.version>24.0.0</graalvm.version>
         <native.maven.plugin.version>0.10.2</native.maven.plugin.version>
+        <maven.compile.parallel>true</maven.compile.parallel>
+        <maven.compile.fork>true</maven.compile.fork>
     </properties>
 
     <profiles>
@@ -41,6 +43,12 @@
                             <mainClass>com.moneyconverter.Main</mainClass>
                             <buildArgs>
                                 <buildArg>--no-fallback</buildArg>
+                                <buildArg>-Os</buildArg>
+                                <buildArg>--gc=epsilon</buildArg>
+                                <buildArg>-R:MaxHeapSize=64m</buildArg>
+                                <buildArg>-J-Xmx2G</buildArg>
+                                <buildArg>--enable-http</buildArg>
+                                <buildArg>--enable-https</buildArg>
                             </buildArgs>
                         </configuration>
                     </plugin>
@@ -58,27 +66,26 @@
                 <configuration>
                     <source>24</source>
                     <target>24</target>
+                    <fork>true</fork>
+                    <meminitial>512m</meminitial>
+                    <maxmem>2048m</maxmem>
+                    <compilerArgs>
+                        <arg>-Xlint:none</arg>
+                        <arg>-Xpkginfo:always</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.moneyconverter.Main</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.moneyconverter.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>

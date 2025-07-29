@@ -31,7 +31,7 @@ public class Client implements RatesFetcher {
 
             checkStatusCode(response.statusCode());
 
-            return XmlParser.readRateFromResponse(source.getCode(), target.getCode(), response.body());
+            return LightweightXmlParser.readRateFromResponse(source.getCode(), target.getCode(), response.body());
 
         } catch (IOException e) {
             throw new MoneyException("error calling server: " + e.getMessage(), e);
