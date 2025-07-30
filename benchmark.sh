@@ -29,18 +29,10 @@ echo "Compile time: $JAVA_COMPILE_TIME ms"
 JAVA_SIZE=$(ls -lh target/money-converter | awk '{print $5}')
 echo "Binary size: $JAVA_SIZE"
 
-# Measure startup and execution time
+# Measure execution time
 JAVA_TOTAL_TIME=0
-JAVA_STARTUP_TOTAL=0
 i=1
 while [ $i -le $NUM_EXECUTIONS ]; do
-    # Measure startup time (with --version flag which should be quick)
-    START=$(get_time_ms)
-    ./target/money-converter --version > /dev/null 2>&1
-    END=$(get_time_ms)
-    STARTUP=$((END - START))
-    JAVA_STARTUP_TOTAL=$((JAVA_STARTUP_TOTAL + STARTUP))
-    
     # Measure execution time
     START=$(get_time_ms)
     ./target/money-converter -from USD -to EUR 100 > /dev/null 2>&1
@@ -51,8 +43,6 @@ while [ $i -le $NUM_EXECUTIONS ]; do
 done
 
 JAVA_AVG_EXEC=$((JAVA_TOTAL_TIME / NUM_EXECUTIONS))
-JAVA_AVG_STARTUP=$((JAVA_STARTUP_TOTAL / NUM_EXECUTIONS))
-echo "Average startup time: $JAVA_AVG_STARTUP ms"
 echo "Average execution time: $JAVA_AVG_EXEC ms"
 echo
 
@@ -76,18 +66,10 @@ echo "Compile time: $GO_COMPILE_TIME ms"
 GO_SIZE=$(ls -lh bin/moneyconverter | awk '{print $5}')
 echo "Binary size: $GO_SIZE"
 
-# Measure startup and execution time
+# Measure execution time
 GO_TOTAL_TIME=0
-GO_STARTUP_TOTAL=0
 i=1
 while [ $i -le $NUM_EXECUTIONS ]; do
-    # Measure startup time (with --version flag or similar)
-    START=$(get_time_ms)
-    ./bin/moneyconverter --version > /dev/null 2>&1
-    END=$(get_time_ms)
-    STARTUP=$((END - START))
-    GO_STARTUP_TOTAL=$((GO_STARTUP_TOTAL + STARTUP))
-    
     # Measure execution time
     START=$(get_time_ms)
     ./bin/moneyconverter -from USD -to EUR 100 > /dev/null 2>&1
@@ -98,8 +80,6 @@ while [ $i -le $NUM_EXECUTIONS ]; do
 done
 
 GO_AVG_EXEC=$((GO_TOTAL_TIME / NUM_EXECUTIONS))
-GO_AVG_STARTUP=$((GO_STARTUP_TOTAL / NUM_EXECUTIONS))
-echo "Average startup time: $GO_AVG_STARTUP ms"
 echo "Average execution time: $GO_AVG_EXEC ms"
 echo
 
@@ -111,5 +91,4 @@ echo "Metric          | Java Native | Go"
 echo "--------------- | ----------- | ----------"
 echo "Compile time    | $JAVA_COMPILE_TIME ms | $GO_COMPILE_TIME ms"
 echo "Binary size     | $JAVA_SIZE | $GO_SIZE"
-echo "Startup time    | $JAVA_AVG_STARTUP ms | $GO_AVG_STARTUP ms"
 echo "Execution time  | $JAVA_AVG_EXEC ms | $GO_AVG_EXEC ms"
