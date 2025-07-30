@@ -10,6 +10,16 @@ echo "Number of warm-up executions: $NUM_WARMUP"
 echo "Number of measured executions: $NUM_EXECUTIONS"
 echo
 
+# Check if hyperfine is installed
+if ! command -v hyperfine &> /dev/null; then
+    echo "Error: hyperfine is not installed."
+    echo "Please install hyperfine to run this benchmark."
+    exit 1
+fi
+
+echo "Using hyperfine for benchmarking"
+
+
 # Function to extract statistics from hyperfine JSON output
 extract_stat() {
     local json_file=$1
