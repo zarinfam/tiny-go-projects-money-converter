@@ -11,7 +11,7 @@ echo "Number of measured executions: $NUM_EXECUTIONS"
 echo
 
 # Check if hyperfine is installed
-if ! command -v hyperfine &> /dev/null; then
+if [ ! -x "/usr/bin/hyperfine" ]; then
     echo "Error: hyperfine is not installed."
     echo "Please install hyperfine to run this benchmark."
     exit 1
