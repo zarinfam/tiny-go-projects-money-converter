@@ -49,6 +49,7 @@
                                 <buildArg>-J-Xmx2G</buildArg>
                                 <buildArg>--enable-http</buildArg>
                                 <buildArg>--enable-https</buildArg>
+                                <buildArg>--enable-preview</buildArg>
                             </buildArgs>
                         </configuration>
                     </plugin>
@@ -70,6 +71,7 @@
                     <meminitial>512m</meminitial>
                     <maxmem>2048m</maxmem>
                     <compilerArgs>
+                        <arg>--enable-preview</arg>
                         <arg>-Xlint:none</arg>
                         <arg>-Xpkginfo:always</arg>
                     </compilerArgs>

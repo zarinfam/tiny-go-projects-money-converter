@@ -2,19 +2,14 @@ package com.moneyconverter.money;
 
 public class Convert {
     public static Amount convert(Amount amount, Currency to, RatesFetcher rates) throws MoneyException {
-        ExchangeRate r = rates.fetchExchangeRate(amount.getCurrency(), to);
-        
-        Amount convertedValue = applyExchangeRate(amount, to, r);
-        
-        convertedValue.validate();
-        
-        return convertedValue;
+        ExchangeRate r = rates.fetchExchangeRate(amount.currency(), to);
+        return applyExchangeRate(amount, to, r);
     }
 
     private static Amount applyExchangeRate(Amount a, Currency target, ExchangeRate rate) throws MoneyException {
-        Decimal converted = a.getQuantity().multiply(rate.getRate());
+        Decimal converted = a.quantity().multiply(rate.rate());
 
-        byte targetPrecision = target.getPrecision();
+        byte targetPrecision = target.precision();
         byte convertedPrecision = converted.getPrecision();
 
         if (convertedPrecision > targetPrecision) {
@@ -27,7 +22,7 @@ public class Convert {
         
         converted.setPrecision(targetPrecision);
 
-        return new Amount(converted, target);
+        return Amount.of(converted, target);
     }
 
     private static long pow10(byte power) {

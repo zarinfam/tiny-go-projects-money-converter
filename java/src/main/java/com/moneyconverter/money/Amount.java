@@ -1,44 +1,25 @@
 package com.moneyconverter.money;
 
-public class Amount {
-    private final Decimal quantity;
-    private final Currency currency;
-
+public record Amount(Decimal quantity, Currency currency) {
     private static final long MAX_DECIMAL = 1_000_000_000_000L;
 
-    public Amount(Decimal quantity, Currency currency) throws MoneyException {
-        if (quantity.getPrecision() > currency.getPrecision()) {
+    public static Amount of(Decimal quantity, Currency currency) throws MoneyException {
+        if (quantity.getPrecision() > currency.precision()) {
             throw new MoneyException("quantity is too precise");
-        } else if (quantity.getPrecision() < currency.getPrecision()) {
-            long multiplier = pow10((byte) (currency.getPrecision() - quantity.getPrecision()));
+        } else if (quantity.getPrecision() < currency.precision()) {
+            long multiplier = pow10((byte) (currency.precision() - quantity.getPrecision()));
             quantity.setSubunits(quantity.getSubunits() * multiplier);
-            quantity.setPrecision(currency.getPrecision());
+            quantity.setPrecision(currency.precision());
         }
-
-        this.quantity = quantity;
-        this.currency = currency;
-    }
-
-    public void validate() throws MoneyException {
         if (quantity.getSubunits() > MAX_DECIMAL) {
             throw new MoneyException("quantity over 10^12 is too large");
         }
-        if (quantity.getPrecision() > currency.getPrecision()) {
-            throw new MoneyException("quantity is too precise");
-        }
+        return new Amount(quantity, currency);
     }
 
     @Override
     public String toString() {
-        return quantity.toString() + " " + currency.toString();
-    }
-
-    public Decimal getQuantity() {
-        return quantity;
-    }
-
-    public Currency getCurrency() {
-        return currency;
+        return "%s %s".formatted(quantity, currency);
     }
 
     private static long pow10(byte power) {
@@ -47,7 +28,8 @@ public class Amount {
             case 1 -> 10L;
             case 2 -> 100L;
             case 3 -> 1000L;
-            default -> (long) Math.pow(10, power);
+            case byte p when p > 3 -> (long) Math.pow(10, p);
+            default -> throw new IllegalArgumentException("Negative power not supported");
         };
     }
 }

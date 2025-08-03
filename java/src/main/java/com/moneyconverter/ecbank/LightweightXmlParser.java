@@ -32,7 +32,7 @@ public class LightweightXmlParser {
         ExchangeRate sourceToEur = findInverseRate(sourceCurrency, xmlContent);
         ExchangeRate eurToTarget = findDirectRate(targetCurrency, xmlContent);
         
-        Decimal crossRate = eurToTarget.getRate().multiply(sourceToEur.getRate());
+        Decimal crossRate = eurToTarget.rate().multiply(sourceToEur.rate());
         
         return new ExchangeRate(crossRate);
     }
